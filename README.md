@@ -12,6 +12,8 @@ This project serves to quickly and accurately tackle questions for the business 
 `item_catalog.py`:
 ## Square API Python Script --- Data Extraction
 ## PostgreSQL Connection --- Data Transformation and Storage
+<img width="415" height="230" alt="bbq-pipeline-sql-tables" src="https://github.com/user-attachments/assets/094dc9f0-1837-46e3-ab58-03b4a7eb8b09" />
+
 ## Database to PowerBI --- Data Reporting
 ## Project Roadmap
 - [X] Establish a PostgreSQL database, locally hosted
