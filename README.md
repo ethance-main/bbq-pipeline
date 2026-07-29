@@ -1,4 +1,4 @@
-<div align=center> <img width="623" height="421" alt="image" src="https://github.com/user-attachments/assets/ce1d09ca-31dc-41dc-b41b-5a574ac20e0f" />
+<div align=center> <img width="467" height="316" alt="image" src="https://github.com/user-attachments/assets/ce1d09ca-31dc-41dc-b41b-5a574ac20e0f" />
 
 # Small Business ETL Pipeline (Version 0.7) 
 </div>
@@ -10,6 +10,10 @@ This project serves to quickly and accurately tackle questions for the business 
 - What trends are we noticing, and how can we prevent having too little or too much stock?
 
 **Project Scope:** In the current state, this script only pulls away a few main data points: a primary "order" object per transaction, a list of "line items" that are attached to that order, and "modification" objects which correlate to each of the line items in every order. The script currently only tracks sales and major inventory ingredients (meats).
+
+<div align=center>
+<img width="627" height="326" alt="image" src="https://github.com/user-attachments/assets/5da8973c-3b9b-4e2c-b914-03590d4474b7" />
+</div>
   
 ## File Directory 
 
@@ -22,6 +26,12 @@ This project serves to quickly and accurately tackle questions for the business 
 `item_catalog.py`: A catalog of item variations. Over time, the business has modified, updated, added, and removed various items from the menu. These changes can result in the same item having multiple names: "mac n cheese - small" and "sm. mac", for example. This lookup dictionary is utilized in the `process_line_item()` function in order to unify formatting and include meat amount and type for every menu item.
 
 ## Square API Python Script --- Data Extraction
+
+<div align=center>
+<img width="497" height="401" alt="image" src="https://github.com/user-attachments/assets/b95f4124-c2ac-48b5-a822-dee8c7f4bad6" />
+</div>
+
+
 Data Extraction from the Square API is controlled by the `pipeline.py` script defined in this repository. First, the script utilizes environment variables to access the Square API for the owner's profile. Queries have two limitations when contacting the API: limited to 500 rows, and within a 90 day window. Therefore, multiple, recursive queries are ran to capture every order within a particular time interval. The Order data object obtained from the API is then transformed into 3 distinct dataframes:
 1. `order_df`: Contains overhead data for each transaction, including a unique order id, date and time the order was created/updated/closed, the location of sales, and various monetary amounts such as tip amount, total money, etc.
 2. `items_df`: Each row corresponds to an individual line item, including a relationship to the unique order id, a unique item id, the quantity of items purchased, the base price of the item, the type of meat (and what amount) is used in the item, etc.
