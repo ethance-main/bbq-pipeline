@@ -1,6 +1,7 @@
-<img width="623" height="421" alt="image" src="https://github.com/user-attachments/assets/ce1d09ca-31dc-41dc-b41b-5a574ac20e0f" />
+<div align=center> <img width="623" height="421" alt="image" src="https://github.com/user-attachments/assets/ce1d09ca-31dc-41dc-b41b-5a574ac20e0f" />
 
 # Small Business ETL Pipeline (Version 0.7) 
+</div>
 
 This project connects order information from a real-world small business (Sweet Racks and Smokin' Butts BBQ, LLC) into PowerBI for reporting. A Python script pulls order details off of the Square API, transforms the data into a uniform format, then appends the information into a hierarchical series of PostgreSQL tables that are locally hosted. The database is then directly connected to PowerBI Desktop for dashboard construction and data analytics. 
 This project serves to quickly and accurately tackle questions for the business stakeholder, such as:
@@ -9,8 +10,9 @@ This project serves to quickly and accurately tackle questions for the business 
 - What trends are we noticing, and how can we prevent having too little or too much stock?
 
 **Project Scope:** In the current state, this script only pulls away a few main data points: a primary "order" object per transaction, a list of "line items" that are attached to that order, and "modification" objects which correlate to each of the line items in every order. The script currently only tracks sales and major inventory ingredients (meats).
+  
+## File Directory 
 
-## File Directory
 `pipeline.py`: Main script for the pipeline. `run_pipeline(days_back=1)` acts as the main execution function, relying on several, smaller functions to simulate the different stages of the pipeline:
 - `get_order(days_back=1)`: Connects and sends a SQL query to the Square API housing the small business' sales data. Outputs the Order data structure in a raw format.
 - `transform_orders(raw_orders)`: This function takes in the raw Order data structure produced by the Square API and transforms it into 3 distinct pandas dataframes, preserving only data deemed potentially useful for the pipeline applications. Outputs the three pandas dataframes.
@@ -28,8 +30,9 @@ Data Extraction from the Square API is controlled by the `pipeline.py` script de
 After the dataframes are constructed, the data is loaded into their respective database tables, and the script ends.
 
 ## PostgreSQL Connection --- Data Storage and Management
-<img width="400" height="250" alt="image" src="https://github.com/user-attachments/assets/95828ff9-1c9d-4678-81c0-f7c50ba30f5f" />
-
+<div align=center>
+<img width="400" height="250" alt="image" src="https://github.com/user-attachments/assets/95828ff9-1c9d-4678-81c0-f7c50ba30f5f"/>
+</div>
 The PostgreSQL database contains order history throughout the entire lifespan of the business, going back to 2020. Data is broken up into 3 distinct tables: order_records, line_item_records, and modifier_records. Each order can have multiple line items, each line item can have multiple (or zero) modifications. Following is the columns for each table:
 
 - `order_records`: order_id, ticket_name, date_created, time_created, date_updated, time_updated, date_closed, time_closed, order_source, order_status, total_money, total_tax_money, total_tip_money, total_discount_money, total_service_charge_money, currency, location_id, order_version
