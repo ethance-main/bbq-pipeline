@@ -33,11 +33,17 @@ def convert_to_est(timestamp_str):
     est_dt = dt.astimezone(ZoneInfo("America/New_York"))
     return est_dt.replace(microsecond=0, tzinfo=None)  # Remove microseconds for cleaner output
 
-# Fetch orders from Square API with pagination and date range filtering
+"""
+PIPELINE STAGE 1: Fetch Orders
+Requires: Square API access token, location IDs, and date range (days_back)
+Modifies: None
+Effects: Fetches orders from Square API and returns a list of order objects
+"""
 def get_orders(days_back=1):
     all_orders = []
     end_time = datetime.now(timezone.utc)
     start_time = end_time - timedelta(days=days_back)
+    # Fetch orders in chunks of 89 days to avoid API limitations
     chunk_days = 89
     current_start = start_time
     while current_start < end_time:
@@ -48,6 +54,8 @@ def get_orders(days_back=1):
                 query_body = {
                     "location_ids": [os.environ.get("LOCATION_ID_1"), os.environ.get("LOCATION_ID_2"),
                                     os.environ.get("LOCATION_ID_3"), os.environ.get("LOCATION_ID_4")],
+                                    # Add more location IDs as needed
+                    # Set a limit for the number of orders to fetch per request
                     "limit": 500,
                     "query": {
                         "filter": {
@@ -64,6 +72,7 @@ def get_orders(days_back=1):
                         }
                     }
                 }
+                # If a cursor is present, include it in the request to fetch the next page of results
                 if cursor:
                     query_body["cursor"] = cursor
                 response = client.orders.search(
@@ -73,6 +82,7 @@ def get_orders(days_back=1):
                     query=query_body["query"]
                 )
                 chunk = response.orders if hasattr(response, 'orders') else []
+                # Add the fetched chunk of orders to the overall list
                 all_orders.extend(chunk)
                 print(f"Fetched {len(chunk)} orders from {current_start.date()} to {current_end.date()}. Total so far: {len(all_orders)}")
                 cursor = response.cursor if hasattr(response, 'cursor') else None
@@ -85,9 +95,33 @@ def get_orders(days_back=1):
     print(f"Total orders fetched: {len(all_orders)}")
     return all_orders
 
+"""
+Helper function to process line items and map them to the item catalog. 
+If the item or its variation is not found, it returns a default structure with "None" values.
+"""
+def process_line_item(item_name, variation_name=None):
+    if item_name in ITEM_CATALOG:
+        return ITEM_CATALOG[item_name]
+    if variation_name:
+        combined_name = f"{item_name} - {variation_name}"
+        if combined_name in ITEM_CATALOG:
+            return ITEM_CATALOG[combined_name]
+    print(f"Item '{item_name}' with variation '{variation_name}' not found in catalog.")
+    return {
+        "base_name":    item_name,
+        "meat_type":    "None",
+        "size":         "None",
+        "meat_amount":  0,
+        "category":     "None",
+        "subcategory":  "None"
+    }
 
-
-
+"""
+PIPELINE STAGE 2: Transform Orders
+Requires: List of order objects fetched from Square API
+Modifies: None
+Effects: Transforms the raw order data into structured DataFrames for orders, items, and modifiers
+"""
 def transform_orders(raw_orders):
     order_records = []
     item_records = []
@@ -166,7 +200,12 @@ def transform_orders(raw_orders):
     modifiers_df = pd.DataFrame(modifier_records)
     return (orders_df, items_df, modifiers_df)
 
-
+"""
+PIPELINE STAGE 3: Load to PostgreSQL
+Requires: DataFrames for orders, items, and modifiers
+Modifies: PostgreSQL database tables for orders, items, and modifiers
+Effects: Inserts the transformed data into the respective PostgreSQL tables, handling conflicts by ignoring duplicates
+"""
 def load_to_postgres(orders_df, items_df, modifiers_df):
     # Load orders
     for _, row in orders_df.iterrows():
@@ -183,6 +222,7 @@ def load_to_postgres(orders_df, items_df, modifiers_df):
                 %s, %s, %s, %s
             ) ON CONFLICT (order_id) DO NOTHING;
         """, tuple(row))
+    # Load items
     for _, row in items_df.iterrows():
         cursor.execute(f"""
             INSERT INTO {os.environ.get("DB_ITEMS_TABLE")} (
@@ -197,6 +237,7 @@ def load_to_postgres(orders_df, items_df, modifiers_df):
                 %s, %s, %s
             ) ON CONFLICT (unique_id) DO NOTHING;
         """, tuple(row))
+    # Load modifiers
     for _, row in modifiers_df.iterrows():
         cursor.execute(f"""
             INSERT INTO {os.environ.get("DB_MODIFIER_TABLE")} (
@@ -209,12 +250,16 @@ def load_to_postgres(orders_df, items_df, modifiers_df):
                 %s
             ) ON CONFLICT (mod_uid) DO NOTHING;
         """, tuple(row))
-
+    # Commit the transaction to save changes to the database
     conn.commit()
     print(f"Merged {len(orders_df)} orders into PostgreSQL table.")
     print(f"Merged {len(items_df)} items into PostgreSQL table.")
     print(f"Merged {len(modifiers_df)} modifications into PostgreSQL table.")
-            
+
+"""
+PIPELINE EXECUTION
+This function orchestrates the entire ETL pipeline by fetching orders, transforming them into structured DataFrames
+"""
 def run_pipeline(days_back=1):
     orders = get_orders(days_back)
     if not orders:
@@ -225,23 +270,5 @@ def run_pipeline(days_back=1):
         print("No records to load after transformation. Exiting pipeline.")
         return
     load_to_postgres(orders_df, items_df, modifiers_df)
-
-def process_line_item(item_name, variation_name=None):
-    if item_name in ITEM_CATALOG:
-        return ITEM_CATALOG[item_name]
-    if variation_name:
-        combined_name = f"{item_name} - {variation_name}"
-        if combined_name in ITEM_CATALOG:
-            return ITEM_CATALOG[combined_name]
-    print(f"Item '{item_name}' with variation '{variation_name}' not found in catalog.")
-    return {
-        "base_name":    item_name,
-        "meat_type":    "None",
-        "size":         "None",
-        "meat_amount":  0,
-        "category":     "None",
-        "subcategory":  "None"
-    }
-
 
 run_pipeline(days_back=7)
