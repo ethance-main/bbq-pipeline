@@ -59,10 +59,10 @@ The data from the PostgreSQL database has been loaded into PowerBI, however the 
 - [X] Write the Python script which uploads Square Orders to SQL database
 - [X] Construct item catalog to unify item formatting, simplify menu variance
 - [X] Connect the SQL database to PowerBI Desktop
-- [ ] Construct a Weekly Sales Dashboard, comparing sales against previous week
-- [ ] Automate the Python script to run on a regular, weekly schedule
-- [ ] Move SQL database to an independent home server, rework database credentials
-- [ ] Explore and expand into other reporting opportunities (Inventory, Expenses, Labor, etc.)
+- [ ] Construct a Weekly Sales Dashboard, comparing sales against previous week (Version 0.8)
+- [ ] Automate the Python script to run on a regular, weekly schedule (Version 0.9)
+- [ ] Move SQL database to an independent home server, rework database credentials (Version 1.0)
+- [ ] Explore and expand into other reporting opportunities - Inventory, Expenses, Labor, etc.(Version 1.0+)
 
 ## Changelog
 ### Version 0.7 (First Public Release) - 7/27/2026
