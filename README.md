@@ -12,7 +12,7 @@ This project serves to quickly and accurately tackle questions for the business 
 **Project Scope:** In the current state, this script only pulls away a few main data points: a primary "order" object per transaction, a list of "line items" that are attached to that order, and "modification" objects which correlate to each of the line items in every order. The script currently only tracks sales and major inventory ingredients (meats).
 
 <div align=center>
-<img width="627" height="326" alt="image" src="https://github.com/user-attachments/assets/5da8973c-3b9b-4e2c-b914-03590d4474b7" />
+<img width="500" height="375" alt="Ingestion" src="https://github.com/user-attachments/assets/27889bc0-51bb-447e-a430-1d41c61b4c64" />
 </div>
   
 ## File Directory 
