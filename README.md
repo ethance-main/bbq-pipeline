@@ -70,3 +70,7 @@ The data from the PostgreSQL database has been loaded into PowerBI, however the 
 - PostgreSQL database is still hosted locally
 - Data is loaded into PowerBI Desktop, dashboards still need to be constructed
 
+## Bugs to Squash
+- [ ] "Location" entry digests as a unique code for every location instead of a practical, easy-to-read name
+- [ ] Discrepancy between summations on Square App and Numbers pulled into PowerBI
+
