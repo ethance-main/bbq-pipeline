@@ -52,19 +52,25 @@ The PostgreSQL database contains order history throughout the entire lifespan of
 - `modifier_records`: mod_uid, item_uid, order_id, catalog_object_id, catalog_version, mod_name, quantity, base_price, total_price
 
 ## Database to PowerBI --- Data Reporting
-The data from the PostgreSQL database has been loaded into PowerBI, however the dashboard still needs to be constructed. (TODO)
+The data from the PostgreSQL database is loaded into Power BI Desktop for reporting. Still need to share DAX modifications (DOCUMENTATION TODO).
+# Dashboard V1
+<div align=center>
+<img width="979" height="549" alt="image" src="https://github.com/user-attachments/assets/8996586c-dc71-4857-b0a7-90126b7bb882" />
+</div>
 
 ## Project Roadmap
 - [X] Establish a PostgreSQL database, locally hosted
 - [X] Write the Python script which uploads Square Orders to SQL database
 - [X] Construct item catalog to unify item formatting, simplify menu variance
 - [X] Connect the SQL database to PowerBI Desktop
-- [ ] Construct a Weekly Sales Dashboard, comparing sales against previous week (Version 0.8)
+- [X] Construct a Weekly Sales Dashboard, comparing sales against previous week (Version 0.8)
 - [ ] Automate the Python script to run on a regular, weekly schedule (Version 0.9)
 - [ ] Move SQL database to an independent home server, rework database credentials (Version 1.0)
 - [ ] Explore and expand into other reporting opportunities - Inventory, Expenses, Labor, etc.(Version 1.0+)
 
 ## Changelog
+### Version 0.8 (Dashboard Development) - 8/7/2026
+- V1 Dashboard has been constructed in PowerBI Desktop
 ### Version 0.7 (First Public Release) - 7/27/2026
 - Python script needs to be executed manually in order to refresh the PostgreSQL database
 - PostgreSQL database is still hosted locally
@@ -73,4 +79,5 @@ The data from the PostgreSQL database has been loaded into PowerBI, however the 
 ## Bugs to Squash
 - [ ] "Location" entry digests as a unique code for every location instead of a practical, easy-to-read name
 - [ ] Discrepancy between summations on Square App and Numbers pulled into PowerBI
+- [ ] Discrepancy in meat units utilized and sold
 
