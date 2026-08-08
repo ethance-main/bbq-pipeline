@@ -1,6 +1,6 @@
 <div align=center> <img width="467" height="316" alt="image" src="https://github.com/user-attachments/assets/ce1d09ca-31dc-41dc-b41b-5a574ac20e0f" />
 
-# Small Business ETL Pipeline (Version 0.7) 
+# Small Business ETL Pipeline (Version 0.8) 
 </div>
 
 This project connects order information from a real-world small business (Sweet Racks and Smokin' Butts BBQ, LLC) into PowerBI for reporting. A Python script pulls order details off of the Square API, transforms the data into a uniform format, then appends the information into a hierarchical series of PostgreSQL tables that are locally hosted. The database is then directly connected to PowerBI Desktop for dashboard construction and data analytics. 
